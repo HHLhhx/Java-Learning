@@ -88,7 +88,7 @@
   + 正数补码不变, 负数的补码在反码的基础上 +1, 另外补码还能多记录一个特殊的值 -128, 该数据在1个字节下, 没有原码和反码
   + **计算机的存储和计算都是以补码的形式进行的**
 
-<img src="D:\Study\SelfLearing\Java学习\assets\image-20230908114235693.png" alt="image-20230908114235693" style="zoom: 33%;" />
+<img src="assets\image-20230908114235693.png" alt="image-20230908114235693" style="zoom: 33%;" />
 
 > 该知识可以解释类型转换
 
@@ -173,11 +173,11 @@
 + **本地方法栈:** JVM 在使用操作系统功能的时候使用, 和我们开发无关
 + **寄存器:** 给 CPU 使用, 和我们开发无关
 
-<img src="D:\Study\SelfLearing\Java学习\assets\image-20230909203554924.png" alt="image-20230909203554924" style="zoom:80%;" />
+<img src="assets\image-20230909203554924.png" alt="image-20230909203554924" style="zoom:80%;" />
 
 >从JDK8开始, 取消方法区, 新增元空间, 把原来方法区的多种功能进行拆分, 有的功能放到了栈中, 有的功能放到了元空间中
 
-<img src="D:\Study\SelfLearing\Java学习\assets\image-20230909204118616.png" alt="image-20230909204118616" style="zoom:67%;" />
+<img src="assets\image-20230909204118616.png" alt="image-20230909204118616" style="zoom:67%;" />
 
 + 当两个数组指向同一个小空间时, 其中一个数组对小空间中的值发生了改变, 那么其他数组再次访问的时候都是修改之后的结果了
 
@@ -325,13 +325,13 @@
 
   + 当使用双引号直接赋值时, 系统会检查该字符串在串池中是否存在,不存在则创建新的, 存在则复用 **(节约内存)**
 
-    <img src="D:\Study\SelfLearing\Java学习\assets\image-20230916212001271.png" alt="image-20230916212001271" style="zoom: 33%;" />
+    <img src="assets\image-20230916212001271.png" alt="image-20230916212001271" style="zoom: 33%;" />
 
     
 
   + 每次 new 都会创造一个新空间, 这种方式创建对象不会复用 **(占内存)**
 
-    <img src="D:\Study\SelfLearing\Java学习\assets\image-20230916212407081.png" alt="image-20230916212407081" style="zoom: 33%;" />
+    <img src="assets\image-20230916212407081.png" alt="image-20230916212407081" style="zoom: 33%;" />
 
 + **常用方法**
 
@@ -395,23 +395,23 @@
 
   + **无变量直接拼接:** 会复用串池中的字符串
 
-    ![image-20230917152105627](D:\Study\SelfLearing\Java学习\assets\image-20230917152105627.png)
+    ![image-20230917152105627](assets\image-20230917152105627.png)
 
   + **有变量拼接**
 
     + JDK8前: `String s2 = s1 + "b"` 相当于 `new StringBuilder().append(s1).append("b").toString()`
 
-      ![image-20230917152338513](D:\Study\SelfLearing\Java学习\assets\image-20230917152338513.png)
+      ![image-20230917152338513](assets\image-20230917152338513.png)
 
     + JDK8后: 预估空间, 创建数组
 
-      ![image-20230917152844570](D:\Study\SelfLearing\Java学习\assets\image-20230917152844570.png)
+      ![image-20230917152844570](assets\image-20230917152844570.png)
 
   + **结论:** 如果很多字符串变量拼接, 不要直接 + , 在底层会创建多个对象, 浪费时间, 浪费空间 ==**(建议使用StringBuilder)**==
 
 + **StringBuilder提高效率原理图**
 
-  ![image-20230917153927256](D:\Study\SelfLearing\Java学习\assets\image-20230917153927256.png)
+  ![image-20230917153927256](assets\image-20230917153927256.png)
 
 + **StringBuilder源码分析**
 
@@ -462,6 +462,175 @@
   + **查**
     + E get(int index)
     + int size()
+
+### Math
+
++ **常用方法**
+  + int abs(int a)
+  + double ceil(double a) : 向上取整
+  + double floor(double a) : 向下取整
+  + int round(float a) : 四舍五入
+  + int max(int a, int b)
+  + double pow(double a, double b) : b可以是负数或小数
+  + double sqrt(double a)
+  + double cbrt(double a)
+  + double random() : 返回值为double的随机值, 范围[0.0, 1.0)
+
+### System
+
++ **常用方法**
+  + void exit(int status) : 终止当前java虚拟机(0 : 正常停止；1 : 异常停止)
+  + long currentTimeMills() : 返回当前系统的时间毫秒值形式(时间原点 1970.1.1 8:0:0)
+  + void arraycopy(数据源数组, 起始索引, 目的地数组, 起始索引, 拷贝个数) : 数组拷贝
++ **输出语句**
+  + System.out.println()
+  + **System :** 类名
+  + **out :** 静态变量
+  + **System.out :** 获取打印的对象
+  + **println() :** 方法
+  + **参数 :** 表示打印的内容
+  + **核心逻辑**
+    + 当我们打印一个对象的时候, 底层会调用对象的toString方法, 把对象变成字符串, 然后再打印再控制台上, 打印完毕换行处理
+
+
+### Runtime
+
++ **常用方法**
+  + Runtime getRuntime() : 获取当前系统的运行环境对象
+  + void exit(int status) : 停止虚拟机
+  + int availableProcessors() : 获得CPU的线程数
+  + long maxMemory() : JVM能从系统中获取总内存大小(单位byte)
+  + long totalMemory() : JVM已经从系统中获取总内存大小(单位byte)
+  + long freeMemory() : JVM剩余内存大小(单位byte)
+  + Process exec(String command) : 运行cmd命令
+
+### Object
+
++ **顶级父类**, 只有空参构造
+
++ **常用方法**
+
+  + String toString()
+
+    + 默认情况下, 因为Object类中的toString方法返回的是地址值, 所以, 默认情况下, 打印一个对象打印的就是地址值, 但是地址值对于我们是没有意义的
+    + **处理方案:** 重写父类Object中的toString方法
+
+  + boolean equals(Object obj)
+
+    + 同上, 默认的Object方法比较的是地址值, 需要重写
+
+    + ```java
+      String s = "abc";
+      StringBuilder sb = new StringBuilder("abc");
+      sout(s.equals(sb));  // false
+      // equals方法是被s调用的, 而s是字符串
+      // 所以equals要看String类中的
+      // 字符串中的equals方法, 先判断参数是否为字符串
+      // 如果是字符串, 再比较内部的属性
+      // 但如果参数不是字符串的, 直接返回false
+      
+      sout(sb.equals(s));  // false
+      // 由于StringBuildedr中没有重写equals方法
+      // 使用的是Object中的, 即比较地址值
+      ```
+
+  + protected Object clone(int a)
+
+    + 方法在底层会帮我们创建一个对象, 并把原对象中的数据拷贝过去
+    + **书写细节**
+      + 重写Object中的clone方法
+      + 让JavaBean类实现Cloneable接口
+      + 创建原对象并调用clone
+    + **浅克隆** (Object默认浅克隆)
+      + 不管对象内部的属性是基本数据类型还是引用数据类型, 都完全拷贝过来
+    + **深克隆** (自己重写或使用第三方工具)
+      + 基本数据类型拷贝过来, 常量池中的字符串复用, 引用数据类型会重新创建新的
+
+### Objects
+
++ **工具类**
++ **常用方法**
+  + boolean equals(Object a, Object b) : 先做非空判断, 再比较两个对象
+    + 方法底层先判断a是否为null, 如果是null, 直接返回false, 如果不是, 那么就利用a再次调用equals方法
+  + boolean isNull(Object obj)
+  + boolean nonNull(Object obj)
+
+### BigInteger
+
++ 在底层占用字节个数: byte1个字节, short2个字节, int4个字节, float4个字节, double8个字节, long8个字节
+
++ **构造方法**
+
+  + BigInteger(int num, Random rnd) : 获取随机大整数, 范围: [0, 2^num^ - 1]
+  + BigInteger(String val) : 获取指定的大整数
+  + BigInteger(String val, int radix) : 获取指定进制的大整数
+
+  + public static BigInteger valueOf(long val) : 静态方法获取BigInteger的对象, 内部有优化
+
++ **总结**
+
+  + 如果BigInteger表示的数字没有超出long的范围, 可以用静态方法获取
+
+  + 如果BigInteger表示的超出long的范围, 可以用构造方法获取
+
+  + 对象一旦创建, BigInteger内部记录的值不能发生改变
+
+    + ```java
+      BigInteger bd1 = BigInteger.valueOf(10);
+      BigInteger bd2 = BigInteger.valueOf(5);
+      BigInteger bd3 = BigInteger.valueOf(10);
+      
+      sout(bd1 == bd2);  // false
+      sout(bd1 == bd3);  // true
+      ```
+
+  + 只要进行计算都会产生一个新的BigInteger对象
+
++ **常见方法**
+
+  + BigInteger add(BigInteger val) : 加法
+  + BigInteger subtract(BigInteger val) : 减法
+  + BigInteger multiply(BigInteger val) : 乘法
+  + BigInteger divide(BigInteger val) : 除法, 获取商
+  + BigInteger[] divideAndRemainder(BigInteger val) : 除法, 获取商和余数
+  + boolean equals(Object x)
+  + BigInteger pow(int exponent)
+  + BigInteger max/min(BigInteger val)
+  + int intValue(BigInteger val) : 转为int类型正数, 超出范围数据有误
+
+### BigDecimal
+
++ 用于小数的精确运算
++ **构造方法**
+  + BigDecimal(double val) : 有可能不准确, 不建议使用
+  + BigDecimal(String val) : 更加精确
+  + public static BigDecimal valueOf(double val)
++ **细节**
+  + 如果表示的数字不大, 没有超出double的取值范围, 建议使用静态方法
+  + 如果要表示的数字比较大, 超出了double的取值范围, 建议使用构造方法
+  + 如果我们传递的是0~10之间的**整数**(如果是小数还是会重新new), 包含0和10, 那么方法会返回已经创建好的对象, 不会重新new
++ **常用方法**
+  + BigDecimal add(BigDecimal val)
+  + BigDecimal substract(BigDecimal val)
+  + BigDecimal multiply(BigDecimal val)
+  + BigDecimal divide(BigDecimal val) : 整除
+  + BigDecimal divide(BigDecimal val, 精确几位, 舍入模式)
+    + **舍入模式**(RoundingMode)
+      + UP : 远离零方向舍入
+      + DOWN : 向零方向舍入
+      + CEILING : 向正无限大方向舍入
+      + FLOOR : 向负无限大方向舍入
+      + HALF_UP : 四舍五入(0.5向上舍)
+      + HALF_DOWN : 四舍五入(0.5向下舍)
+
+### 正则表达式
+
++ **作用**
+  + 校验字符串是否满足规则
+  + 在一段文本中查找满足要求的内容
++ **用法**
+  + boolean matches(String regex) : 判断是否与正则表达式匹配
++ ![image-20230930120952534](assets/image-20230930120952534.png)
 
 
 
@@ -671,7 +840,7 @@
   + **调用方式:** 
     + 类名调用 (推荐)
     + 对象名调用
-  + ![image-20230921101521577](D:\Study\SelfLearing\Java学习\assets\image-20230921101521577.png)
+  + ![image-20230921101521577](assets\image-20230921101521577.png)
 
 + **静态方法:** 被static修饰的成员方法, 叫做静态方法
 
@@ -729,7 +898,7 @@
     | **private** |   不能   | 能, 但不能用 |         不能         |
 
   + 只有父类中的虚方法才能被子类继承, 并不是一级一级向上访问
-    + ![image-20230921113641777](D:\Study\SelfLearing\Java学习\assets\image-20230921113641777.png)
+    + ![image-20230921113641777](assets\image-20230921113641777.png)
 
 + **成员变量的访问特点**
   + **就近原则:** 先在局部位置找, 本类成员位置找, 父类成员位置找, 逐级往上
@@ -741,7 +910,7 @@
     + 方法声明与父类一致
     + @Override重写注释
   + **方法重写的本质**
-    + ![image-20230922114656825](D:\Study\SelfLearing\Java学习\assets\image-20230922114656825.png)
+    + ![image-20230922114656825](assets\image-20230922114656825.png)
   + **注意事项**
     + 子类重写父类方法时, 访问权限子类必须大于等于父类 (空着不写 < protected < public)
     + 子类重写父类方法时, 返回值类型子类必须小于等于父类
@@ -754,9 +923,9 @@
   + 子类构造方法的第一行语句默认都是: **super(), 不写也存在, 且必须在第一行**
   + **如果想调用父类的有参构造, 必须手写super进行调用**
 + **this, super使用总结**
-  + ![image-20230922121005085](D:\Study\SelfLearing\Java学习\assets\image-20230922121005085.png)
+  + ![image-20230922121005085](assets\image-20230922121005085.png)
   + 在构造方法中调用本类的其他构造方法, **虚拟机不会再添加super()**, 因为调用的其他构造方法中也默认有super(), **且this()和super()一样只能在第一行**
-  + ![image-20230922120942819](D:\Study\SelfLearing\Java学习\assets\image-20230922120942819.png)
+  + ![image-20230922120942819](assets\image-20230922120942819.png)
 
 ### 多态
 
@@ -783,7 +952,7 @@
     + javac 编译代码的时候会看左边的父类中有没有这个方法, 如果有, 编译成功, 如果没有则编译失败
     + java 运行代码的时候, 实际获取的就是子类中的方法
   + **内存图解**
-    + ![image-20230923212643471](D:\Study\SelfLearing\Java学习\assets\image-20230923212643471.png)
+    + ![image-20230923212643471](assets\image-20230923212643471.png)
 
 + **优势**
 
@@ -796,7 +965,7 @@
 
   + **解决方法:** 强制类型转换
 
-     ![image-20230923213602533](D:\Study\SelfLearing\Java学习\assets\image-20230923213602533.png)
+     ![image-20230923213602533](assets\image-20230923213602533.png)
 
 ### 包
 
@@ -821,7 +990,7 @@
 
 ### 权限修饰符
 
-![image-20230923222914869](D:\Study\SelfLearing\Java学习\assets\image-20230923222914869.png)
+![image-20230923222914869](assets\image-20230923222914869.png)
 
 ### 代码块
 
@@ -852,7 +1021,7 @@
 
 ### 接口
 
-![image-20230924113332164](D:\Study\SelfLearing\Java学习\assets\image-20230924113332164.png)
+![image-20230924113332164](assets\image-20230924113332164.png)
 
 + 接口是一种规则, 对**行为**的抽象, 想让哪个类拥有一个行为, 就让这个类实现对用的接口
 
@@ -948,7 +1117,7 @@
       + **范例:** `Outer.Inner oi = new Outer().new Inner();`
   + 内存图
 
-  ![image-20230924143619793](D:\Study\SelfLearing\Java学习\assets\image-20230924143619793.png)
+  ![image-20230924143619793](assets\image-20230924143619793.png)
 
 + **静态内部类**
 
@@ -986,3 +1155,8 @@
 
     + 当方法的参数是接口或类时, 以接口为例, 可以传递这个接口的实现类对象, 如果实现类只要使用一次, 就可以用匿名内部类简化代码
 
+
+
+## GUI
+
++ 采用图形化的方式显示操作界面
