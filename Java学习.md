@@ -774,11 +774,13 @@
 ##### ZonedDateTime
 
 + **带时区的时间**
-+ static ZonedDateTime now() : 获取当前时间的ZonedDateTime对象
-+ static ZonedDateTime ofXxx(...) : 获取指定时间的ZonedDateTime对象
-+ ZonedDateTime withXxx(时间) : 修改时间系列的方法
-+ ZonedDateTime minusXxx(时间) : 减少时间系列的方法
-+ ZonedDateTime plusXxx(时间) : 增加时间系列的方法
++ **常用方法**
+  + static ZonedDateTime now() : 获取当前时间的ZonedDateTime对象
+  + static ZonedDateTime ofXxx(...) : 获取指定时间的ZonedDateTime对象
+  + ZonedDateTime withXxx(时间) : 修改时间系列的方法
+  + ZonedDateTime minusXxx(时间) : 减少时间系列的方法
+  + ZonedDateTime plusXxx(时间) : 增加时间系列的方法
+
 
 #### SimpleDateFormat相关
 
