@@ -478,7 +478,7 @@
 
 + **常用方法**
   + void exit(int status) : 终止当前java虚拟机(0 : 正常停止；1 : 异常停止)
-  + long currentTimeMills() : 返回当前系统的时间毫秒值形式(时间原点 1970.1.1 8:0:0)
+  + long currentTimeMillis() : 返回当前系统的时间毫秒值形式(时间原点 1970.1.1 8:0:0)
   + void arraycopy(数据源数组, 起始索引, 目的地数组, 起始索引, 拷贝个数) : 数组拷贝
 + **输出语句**
   + System.out.println()
@@ -626,11 +626,183 @@
 + **作用**
   + 校验字符串是否满足规则
   + 在一段文本中查找满足要求的内容
+
 + **用法**
-  + boolean matches(String regex) : 判断是否与正则表达式匹配
-+ <img src="assets/image-20230930120952534.png" alt="image-20230930120952534" style="zoom: 33%;" />
+
+  <img src="assets/image-20230930120952534.png" alt="image-20230930120952534" style="zoom: 33%;" />
+
 + **[] :** 只匹配其中的一个
+
 + **(?i)xxx :** 忽略xxx的大小写
+
++ **贪婪爬取**
+
+  + ab+ 或 ab*
+    + 贪婪(尽可能多): abbbbbbbbbbb...
+
+  + java默认的是贪婪爬取
+
++ **非贪婪**
+
+  + ab+? 或 ab*?
+    + 非贪婪(尽可能少): ab
+
++ **正则表达式在字符串中的作用**
+
+  + boolean matches(String regex) : 判断字符串是否满足正则表达式的规则
+  + String replaceAll(String regex, String newStr) : 按照正则表达式的规则进行替换
+  + String[] split(String regex) : 按照正则表达式的规则切割字符串
+
++ **捕获分组**
+
+  + 每组有组号
+    + 以左括号为基准, 最左边的是第一组, 其次是第二组, 以此类推
+
+  + **\\\\组号** : 表示把第x组的内容拿出来再用一次
+  + **以 (.)\\\\1* 为例**
+    + **(.) :** 以任意单字符看作第一组
+    + **\\\\1 :** 把第一组拿出来再次使用
+    + **\* :** 作用于 **\\\\1**, 表示把第一组拿出来用0次或多次
+
+  + 后续还要继续使用本组数据
+    + 正则内部使用 : \\\\组号
+    + 正则外部使用 : $组号
+    + 例 : `String s = str.relpaceAll("(.)\\1*", "$1");`
+
++ **非捕获分组**
+
+  + 仅仅是把数据括起来, 不占用组号
+  + **xxx(?=yyy)** : ? 指代前面的数据xxx, = 表示xxx后面要跟随的数据, 获取时只获取xxx
+  + **xxx(?:yyy)** : ? 指代前面的数据xxx, : 表示xxx后面要跟随的数据, 获取时获取所有
+  + **xxx(?!yyy)** : ? 指代前面的数据xxx, ! 表示xxx后面要跟随的数据, 获取时只获取不包含yyy的xxx文本
+
+
+#### 爬虫
+
++ **Pattern :** 表示正则表达式对象
+
++ **Matcher :** 文本匹配器, 按照正则表达式的规则去读取字符串, 从头开始读取
+
++ ```java
+  // 获取正则表达式对象
+  Pattern p = Pattern.compile(regex);
+  // 获取文本匹配器对象
+  // m在str中找符合p规则的小串
+  Matcher m = p.matcher(str);
+  // 寻找匹配器中满足规则的子串
+  // 如果没有返回false, 如果有返回true, 在底层记录子串的 起始索引 和 结束索引+1
+  while(m.find()) {
+  	// 方法底层会根据find方法记录的索引进行字符串的截取
+  	String s = m.group();
+      sout(s);
+  }
+  ```
+
+### JDK7以前的时间相关类
+
+#### Date
+
++ Javabean类, 用来描述时间, 精确到毫秒
++ **构造方法**
+  + Date date = new Date() : 创建当前时间对象
+  + Date date = new Date(毫秒值) : 创建指定时间对象
++ **常用方法**
+  + void setTime(long time) : 设置/修改毫秒值
+  + long getTime() : 获取时间对象的毫秒值
+
+#### SimpleDateFormat
+
++ **作用**
+
+  + **格式化:** 把时间变成我们喜欢的格式
+
+  + **解析:** 把字符串表示的时间变成Data对象
+
++ **构造方法**
+  + SimpleDateFormat() : 使用默认格式
+  + SimpleDateFormat(String pattern) : 使用指定格式
++ **常用方法**
+  + final String format(Date date) : 格式化 (日期对象 -- 字符串)
+  + Date parse(String source) : 解析 (字符串 -- 日期对象) 
+
+#### Calendar
+
++ Calendar代表了系统当前时间的日历对象, 可以单独修改、获取时间中的年、月、日
++ **细节**
+  + Calendar是一个抽象类, 不能直接创建对象
+  + **月份范围:** 0~11
+  + **星期范围:** 1~7 (但是1代表星期日)
+  + **字段表示 (Calendar类中有常量表示)**
+    + 0 -- 纪元	1 -- 年	2 -- 月	3 -- 一年中的第几周	4 -- 一个月中的第几周	5 -- 一个月中的第几天(日期) 
++ **获取Calendar日历类对象的方法**
+  + public static Calendar getInstance() : 获取当前时间的日历对象
++ **常用方法**
+  + final Date getTime() : 获取日期对象
+  + final setTime(Date date) : 给日历设置日期对象
+  + long getTimeInMillis() : 得到时间毫秒值
+  + void setTimeInMillis(long millis) : 给日历设置时间毫秒值
+  + int get(int field) : 取日历中的某个字段信息
+  + void set(int field, int value) : 修改日历的某个字段信息
+  + void add(int field, int amount) : 为某个字段增加/减少指定的值
+
+### JDK8的时间相关类
+
++ 代码更简单, 数据更安全==**(对象不可变)**==
+
+#### Date相关
+
+##### ZoneId
+
++ **时区**	
+  + 洲名/城市名	国家名/城市名
++ **常用方法**
+  + static Set<String\> getAvailableZoneIds() : 获取Java中支持的所有时区
+  + static ZoneId systemDefault() : 获取系统默认时区
+  + static ZoneId of(String zoneId) : 获取一个指定时区
+
+##### Instant
+
++ **时间戳**
++ **常用方法**
+  + static Instant now() : 获取当前时间的Instant对象 (标准时间)
+  + static Instant ofXxxx(long epochMilli) : 根据 (秒/毫秒/纳秒) 获取Instant对象
+  + ZonedDateTime atZone(ZoneId zone) : 指定时区
+  + boolean isXxx(Instant otherInstant) : 判断系列的方法
+  + Instant minusXxx(long millisToSubtract) : 减少时间系列的方法
+  + Instant plusXxx(long millisToSubstract) : 增加时间系列的方法
+
+##### ZonedDateTime
+
++ **带时区的时间**
++ static ZonedDateTime now() : 获取当前时间的ZonedDateTime对象
++ static ZonedDateTime ofXxx(...) : 获取指定时间的ZonedDateTime对象
++ ZonedDateTime withXxx(时间) : 修改时间系列的方法
++ ZonedDateTime minusXxx(时间) : 减少时间系列的方法
++ ZonedDateTime plusXxx(时间) : 增加时间系列的方法
+
+#### SimpleDateFormat相关
+
+##### DateTimeFormatter
+
++ **常用方法**
+  + static DateTimeFormatter ofPattern(格式) : 获取格式对象
+  + String format(时间对象) : 按照指定方式格式化
+
+#### Calendar相关
+
+##### LocalDate
+
+##### LocalTime
+
+##### LocalDateTime
+
+#### 工具类
+
+##### Duration
+
+##### Period
+
+##### ChronoUnit
 
 
 
