@@ -51,19 +51,15 @@
 
   + 把一个==取值范围大==的数值，转成==取值范围小==的数据
 
-  ```java
-  目标数据类型 变量名 = (目标数据类型) 被强转的数据;
-  ```
-
+  + `目标数据类型 变量名 = (目标数据类型) 被强转的数据;`
+  
 + **字符串的 "+" 操作**
 
   + 当 "+" 操作中出现字符串时, 这个 "+" 是字符串连接符, 而不是算术运算符了, 会将前后的数据进行拼接, 并产生一个新的字符串
 
   + 连续进行 "+" 操作时, 从左到右逐个执行
 
-    ``` java
-    System.out.println(1 + 2 + "abc" + 2 + 1); // "3abc21"
-    ```
+  + `System.out.println(1 + 2 + "abc" + 2 + 1); // "3abc21"`
 
 #### 自增自减运算符
 
@@ -745,7 +741,7 @@
   + void set(int field, int value) : 修改日历的某个字段信息
   + void add(int field, int amount) : 为某个字段增加/减少指定的值
 
-### JDK8的时间相关类
+### JDK8新增的时间相关类
 
 + 代码更简单, 数据更安全==**(对象不可变)**==
 
@@ -794,17 +790,63 @@
 
 ##### LocalDate
 
++ 年、月、日
+
 ##### LocalTime
 
++ 时、分、秒
+
 ##### LocalDateTime
+
++ 年、月、日、时、分、秒
++ **常用方法**
+  + static XXX now() : 获取当前时间对象
+  + static XXX of(...) : 获取指定时间对象
+  + get开头方法 : 获取日历中的年、月、日、时、分、秒等信息
+  + isBefore, isAfter : 比较两个 LocalDate
+  + with开头的 ： 修改时间系列的方法
+  + minus开头的 ： 减少时间系列的方法
+  + plus开头的 ： 增加时间系列的方法
+  + public LocalDate toLocalDate() : LocalDateTime转换成一个LocalDate对象
+  + public LocalTime toLocalTime() : LocalDateTime转换成一个LocalTime对象
 
 #### 工具类
 
 ##### Duration
 
++ 计算时间间隔 (秒, 纳秒)
+
 ##### Period
 
++ 计算日期间隔 (年、月、日)
+
 ##### ChronoUnit
+
++ 计算日期间隔
+
+### 包装类
+
++ 基本数据类型对应的引用类型
++ 获取Integer对象的方法
+  + public Integer(int value)
+  + public Integer(String s)
+  + public static Integer valueOf(int i)
+  + public static Integer valueOf(String s)
+  + public static Integer valueOf(String s, int radix)
+  + **区别**
+    + 前两种通过 new 创建对象
+    + 后三种当创建 -128~127 的数据对象时, 不会创建新的, 而是调用已经创建好的对象
++ JDK5提出的新机制
+  + **自动装箱:** 把基本数据类型自动变成其对应的包装类
+  + **自动拆箱:** 把包装类自动变成其对应的基本数据类型
+  + 在底层自动调用静态方法valueOf得到一个Integer对象
+  + 即在JDK5以后, int 和 Integer 可以看作同一个东西
++ **常用方法**
+  + static String toBinaryString(int i)
+  + static String toOctalString(int i)
+  + static String toHexString(int i)
+  + static int parseInt(String s) : 将字符串类型的整数转成int类型的整数
+    + 8种包装类, 除了Character都有对应的parseXxx方法, 进行类型转换
 
 
 
