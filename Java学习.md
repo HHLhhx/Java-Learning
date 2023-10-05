@@ -332,17 +332,15 @@
   + **字符串比较**
     + boolean equals()
     + boolean equalsIgnoreCase()
-
+  + int compareTo(String s) : 对字符串进行字典序比较
   + **字符串遍历**
     + char charAt(int index) : 根据索引返回字符
     + int length()
-
-  + **字符串截取**
++ **字符串截取**
     + String substring(int beginIndex, int endIndex)
     + String substring(int beginIndex)
-
   + **字符串替换**
-    + String replace(target, replacement)
+  + String replace(target, replacement)
 
 
 #### StringBuilder
@@ -380,7 +378,7 @@
   + 直接赋值会复用字符串常量池中的
   + new 出来不会复用, 而是开辟一个新空间
 
-+ **`==`比较的到底是什么**
++ **`==` 比较的到底是什么**
 
   + 基本数据类型比较数据值
   + 引用数据类型比较地址值
@@ -744,6 +742,7 @@
 ### JDK8新增的时间相关类
 
 + 代码更简单, 数据更安全==**(对象不可变)**==
++ **月份范围:** 1~12
 
 #### Date相关
 
@@ -847,6 +846,335 @@
   + static String toHexString(int i)
   + static int parseInt(String s) : 将字符串类型的整数转成int类型的整数
     + 8种包装类, 除了Character都有对应的parseXxx方法, 进行类型转换
+
+### 算法
+
+### Arrays
+
++ 操作数组的工具类
+
++ **常用方法**
+
+  + static String toString(数组) : 把数组拼接成一个字符串
+
+  + static int binarySearch(数组, 查找的元素) : 二分查找法查找元素
+
+  + static int[] copyOf(原数组, 新数组长度) : 拷贝数组
+
+  + static int[] copyOfRange(原数组, 起始索引, 结束索引) : 拷贝数组 (指定范围)
+
+  + static void fill(数组, 元素) : 填充数组
+
+  + static void sort(数组) : 按照默认方法进行数组排序
+
+  + static void sort(数组, 排序规则) : 按照指定的规则排序
+
+    + 只能给引用数据类型的数组进行排序, 如果数组是基本数据类型的, 需要变成其对应的包装类
+
+    + ```java
+      // 底层原理:
+      // 利用插入排序 + 二分查找的方式进行排序
+      // 默认把0索引的数据当作是有序的序列, 1索引到最后认为是无序的序列
+      // 遍历无序序列得到里面的每一个元素, 假设当前遍历得到的元素是A
+      // 把A往有序序列中进行插入, 在插入时, 利用二分查找确定A元素的插入点
+      // 拿着A元素, 跟插入到的元素进行比较, 比较的规则就compare方法的方法体
+      // 如果返回值是负数, 拿着A继续跟前面的数据进行比较
+      // 如果返回值是整数, 拿着A继续跟后面的数据进行比较
+      // 如果返回值是0, 也拿着A跟后面的数据进行比较
+      
+      // 匿名内部类
+      Arrays.sort(arr, new Comparator<Integer>() {
+          // compare方法的形式参数:
+          // 参数一 o1: 表示在无序序列中, 遍历得到的每一个元素
+          // 参数二 o2: 有序序列中的元素
+          // 返回值: 
+          // 负数: 表示当前要插入的元素o1放在前面
+          // 正数: 表示当前要插入的元素o1放在后面
+          // 0: 表示当前要插入的元素o1跟现在的元素o2是一样的, 也放在后面
+          @Override
+          public int compare(Integer o1, Integer o2) {
+              return 0;
+          }
+      });
+      
+      // 简单理解:
+      // o1 - o2 : 升序排列
+      // o2 - o1 : 降序排列
+      ```
+
+### Lambda表达式
+
++ **函数式编程 (Functional programming)**
+
+  + 是一种思想特点, 忽略面向对象的复杂语法, **强调做什么, 而不是谁去做**
+
++ **JDK8后出现的新语法形式**
+
+  + **( ) -> { }**
+    + **( ) :** 对应着方法的形参
+    + **-> :** 固定格式
+    + **{ } :** 对应着方法的方法体
+
++ **注意点**
+
+  + 可以用来简化[匿名内部类](# 内部类)的书写
+  + 但只能简化函数式接口的匿名内部类写法
+    + **有且仅有一个抽象方法**的接口叫做函数式接口, 接口上方可以加@FunctionalInterface注释
+
+  ```java
+  // Lambda完整格式
+  Arrays.sort(arr, 
+              (Integer o1, Integer o2) -> {
+                  return o1 - o2;
+              }
+  );
+  ```
+
++ **省略规则**
+
+  + 参数类型可以省略
+  + 如果只有一个参数, 参数类型和( )都可以省略
+  + 如果Lambda表达式的方法体只有一行, 大括号, 分号, return可以省略不写, 需要**同时省略**
+
+  ```java
+  // Lambda省略写法
+  Arrays.sort(arr, (o1, o2) -> o1 - o2);
+  ```
+
+
+
+## 集合
+
+<img src="assets/image-20231004105000703.png" alt="image-20231004105000703" style="zoom:60%;" />
+
+### 泛型
+
++ JDK5引入的特性, 可以在编译阶段约束操作的数据类型, 并进行检查
++ 泛型中不能写基本数据类型
++ 指定泛型的具体类型后, 传递数据时, 可以传入该类类型或其子类型
++ 如果不写泛型, 类型默认是Object
++ **泛型可以在很多地方上定义**
+  + **泛型类**
+    + 当一个类中, 某个变量的数据类型不确定时, 就可以定义带有泛型的类
+  + **泛型方法**
+    + 方法中形参类型不确定时使用
+    + `修饰符<类型> 返回值类型 方法名(类型 变量名) {}`
+  + **泛型接口**
+    + `修饰符 interface 接口名<类型> {}`
+    + 可在实现类中实现泛型, 或在实现类中继续使用泛型, 在创建对象时再实现泛型
++ 泛型不具备继承性, 但数据具备继承性
++ **泛型通配符**
+  + ? 表示不确定的类型, 它可以进行**类型的限定**
+  + ? extends E : 表示可以传递E或者E所有的子类类型
+  + ? super E : 表示可以传递E或者E所有的父类类型
++ **应用场景**
+  + 如果我们定义类, 方法, 接口的时候, 如果类型不确定, 就可以定义泛型类, 泛型方法, 泛型接口
+  + 如果类型不确定, 但是能知道以后只能传递某个体系中的类型, 就可以使用泛型的通配符
+
+### Collection
+
+<img src="assets/image-20231004104808479.png" alt="image-20231004104808479" style="zoom:60%;" />
+
++ Collection是单列集合的祖宗接口, 它的功能是全部单列集合都可以继承使用的
+
++ **常用方法**
+
+  + boolean add(E e)
+  + void clear()
+  + boolean remove(E e)
+  + boolean contains(Object obj)
+    + 底层是依赖[equals方法](# Object)进行判断是否存在的, 如果集合中存储的 是自定义对象, 也想通过contains方法来判断是否包含, 那么在Javabean类中, **一定要重写equals方法**
+  + boolean isEmpty()
+  + int size()
+
++ **Collection的遍历方式**
+  + **迭代器遍历**
+    + 不依赖索引
+    + 迭代器在Java中的类是**Iterator**, 迭代器是集合专用的遍历方式
+    + **Collection集合获取迭代器**
+      + Iterator<E\> iterator() : 返回迭代器对象, 默认指向当前集合的0索引
+    + **Iterator中的常用方法**
+      + boolean hasNext() : 判断当前位置是否有元素
+      + E next() : 获取当前位置的元素, 并将迭代器对象移向下一个位置
+      + void remove()
+    + **注意点**
+      + 报错NoSuchElementException
+      + 迭代器遍历完毕, 指针不会复位, 如果要二次遍历, 只能重新创建迭代器对象
+      + 循环中只能用一次next方法
+      + 迭代器遍历时, 不能用集合的方法进行增加或删除, 如果要删除, 要使用迭代器的remove方法
+    
+  + **增强for遍历**
+    + 增强for的底层就是迭代器, 为了简化迭代器的代码书写, JDK5之后出现
+    + 所有**单列集合**和**数组**才能用增强for进行遍历
+    + **细节**
+      + 修改增强for的变量, 不会改变集合中原本的数据
+    
+  + **Lambda表达式遍历**
+
+    + JDK8后出现
+
+    + default void forEach(Consumer<? super T> action)
+
+      + ```java
+        // 匿名内部类写法
+        coll.forEach(new Consumer<String>() {
+            @Override
+            publlic void accept(String s) {
+                // s依次表示集合中的每一个元素
+            }
+        });
+        
+        // Lambda写法
+        coll.forEach(s -> System.out.println(s));
+        ```
+
+<img src="assets/image-20231005153904812.png" alt="image-20231005153904812" style="zoom: 70%;" />
+
+#### List
+
++ 添加的元素是有序, 可重复, 有索引
++ **常用方法**
+  + void add(int index, E e)
+  + E remove(int index)
+  + E set(int index, E e)
+  + E get(int index)
++ **List集合的遍历方式**
+  + 迭代器遍历
+  + 列表迭代器遍历
+    + ListIterator<E\>  listIterator()
+    + 可用于给列表添加元素
+      + void add(E e)
+  + 增强for遍历
+  + Lambda遍历
+  + 普通for循环
+
+##### ArrayList
+
++ **底层原理**
+  + 利用空参创建的集合, 在底层创建一个默认长度为0的数组
+  + 添加第一个元素时, 底层会创建一个新的长度为10的数组
+  + 存满时, 会扩容1.5倍
+  + 如果一次添加多个元素, 1.5倍也放不下时, 则新创建数组的长度以实际为准
+
+##### LinkedList
+
++ 底层数据结构是双链表
++ **特有方法**
+  + void addFirst(E e)
+  + void addLast(E e)
+  + E getFirst()
+  + E getLast()
+  + E removeFirst()
+  + E removeLast()
+
+#### Set
+
++ 添加的元素是无序, 不重复, 无索引
++ Set集合的方法基本上与Collection的API一致
+
+##### HashSet
+
++ **无序**, 不重复, 无索引
+
++ **要求数据去重时使用**
+
++ 底层采用**哈希表**存储数据
+
+  + **哈希表组成**
+
+    + JDK8之前 : 数组 + 链表
+
+      1. 创建一个默认长度为16, 默认加载因子为0.75 (当数组内元素数量为 数组长度 * 加载因子 时, 数组自动扩容) 的数组, 数组名为table
+
+         ​	`HashSet<String> hm = new HashSet<>();`
+
+      2. 根据元素的哈希值跟数组的长度计算出应存入的位置 
+
+         ​	`int index = (数组长度 - 1) & 哈希值;`
+
+      3. 判断当前位置是否为null, 如果是null直接存入
+
+      4. 如果位置不为null, 表示有元素, 则调用equals方法比较属性值
+
+      5. 一样: 不存 ; 不一样: 存入数组, 形成链表
+
+         + JDK8以前: 新元素存入数组, 老元素挂在新元素下面
+         + JDK8以后: 新元素直接挂在老元素下面
+
+    + JDK8开始 : 数组 + 链表 + 红黑树
+
+      + 当链表长度**超过8**, 且数组长度**大于等于64**时, 自动转换为红黑树
+
+  + **哈希值**
+
+    + 根据hashCode方法算出来的int类型的整数
+    + 该方法定义在Object类中, 所有对象都可以调用, 默认使用地址值进行计算
+    + 一般情况下, 会**重写hashCode方法**, 利用对象内部的属性值计算哈希值
+
+  + **对象的哈希值特点**
+
+    + 如果没有重写hashCode方法, 不同对象计算出的哈希值是不同的
+    + 如果已经重写hashCode方法, 不同的对象只要属性值相同, 计算出的哈希值就是一样的
+    + 在小部分情况下, 不同的属性值或者不同的地址值计算处理的哈希值也有可能一样 (哈希碰撞)
+
+  + **存储自定义对象时, 要重写hashCode方法**
+
+###### LinkedHashSet
+
++ **有序**, 不重复, 无索引
++ **要求数据去重且存取有序时使用**
++ 这里的有序指存储和取出的元素顺序一致
++ **原理:** 底层数据结构依然是哈希表, 只是每个元素又额外多了一个双链表的机制记录存储顺序
+
+##### TreeSet
+
++ **可排序**, 不重复, 无索引
+
++ 底层基于**红黑树**的数据结构实现排序的, 增删改查性能都较好
+
++ **默认规则**
+
+  + 对于数值类型: Integer, Double, 默认按照从小到大的顺序进行排序
+  + 对于字符, 字符串类型: 按照字符在ASCII码表中的数字升序进行排序
+
++ **TreeSet的两种比较方式**
+
+  + **默认排序/自然排序:** Javabean类实现Comparable接口指定比较规则
+
+    + ```java
+      // 在Javabean类实现Comparable接口, Comparable接口是带泛型的, 可在实现接口的时候就确定泛型, 泛型即为该Javabean类
+      // 在Javabean类中实现Comparable接口中的compareTo方法
+      @Override
+      public int compareTo(E e) {
+          // e: 表示已经在红黑树存在的元素
+          // this: 表示当前要添加的元素
+          // 返回值:
+          // 负数: 表示当前要添加的元素是小的, 存左边
+          // 正数: 表示当前要添加的元素是大的, 存右边
+          // 0: 表示当前要添加的元素已经存在, 舍弃
+          return 0;
+      }
+      ```
+
+  + **比较器排序:** 创建TreeSet对象的时候, 传递比较器Comparator指定规则
+
+    + ```java
+      TreeSet<E> ts = new TreeSet<>(new Comparator<E>() {
+          @Override
+          public int compare(E e1, E e2) {
+              // e1: 表示当前要添加的元素
+              // e2: 表示已经在红黑树中的元素
+              // 返回值同上
+              retrun 0;
+          }
+      });
+      ```
+
+  + **默认采用第一种, 当第一种排序无法满足时, 使用第二种**
+
+  + **当两种同时存在时, 使用的是第二种**
+
+### Map
 
 
 
